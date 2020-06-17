@@ -1,0 +1,101 @@
+/* Natalie Pham
+ This program will read in a group of test scores( positive integers from 1 to 100)
+ from the keyboard and then calculates and outputs the average score
+ as well as the highest and lowest score. There will be a maximum of 100 scores.
+ */
+
+#include <iostream>
+using namespace std;
+
+
+// Function prototypes
+float findAverage (int grades [], int);
+int findHighest (int grades [], int);
+int findLowest (int grades [], int);
+
+int main (void)
+{
+    int GradeAray [100];
+    int numberOfGrades;
+    int pos; //index to array
+    float avgOfGrades;
+    int highestGrade;
+    int lowestGrade;
+    pos = 0;
+    cout << "PLease input grade from 1 to 100, (or -99 to stop)" << endl;
+    cin >> GradeAray[pos];
+    while (GradeAray [pos] != -99)
+    {
+        pos++;
+        cin >> GradeAray[pos];
+    }
+    
+    numberOfGrades = pos;
+    // call function to find average
+    avgOfGrades = findAverage (GradeAray, numberOfGrades);
+    cout << endl << "The average of all grades the grades is " << avgOfGrades << endl;
+    
+    // Fill in the call to the function that calculates the highest grade
+    highestGrade = findHighest (GradeAray, numberOfGrades);
+    cout << endl << "The highest grade is " << highestGrade << endl;
+    
+    // Lowest
+    lowestGrade = findLowest(GradeAray, numberOfGrades);
+    cout << endl << "The lowest grade is " << lowestGrade << endl;
+    
+    return 0;
+    
+}
+
+//***************************************************************************
+//                                 findAverage
+// task:          This function receives an array of integers and its size.
+//                It finds and returns the average of the numbers in the array
+// data in:       array of floating point numbers
+// data returned: average of the numbers in the array
+//
+//***************************************************************************
+float findAverage (int array[ ] , int size)
+{
+    float sum = 0;
+    for (int pos = 0; pos < size; pos++)
+        sum = sum + array[pos];
+    return (sum / size);
+}
+//***************************************************************************
+//                                 findHighest
+//     task:          This function receives an array of integers and its size.
+//          It finds and returns the highest value of the numbers in the array
+//     data in:       array of floating point numbers
+//     data returned: highest value of the numbers in the array
+//***************************************************************************
+
+int   findHighest (int array [ ], int size)
+{
+    int highest = 9;
+    for(int pos = 0; pos<size; pos++){
+        if (array[pos]>highest){
+            highest = array[pos];
+        }
+    }
+    return highest;
+}
+
+//***************************************************************************
+//                                 findLowest
+//     task:          This function receives an array of integers and its size.
+//          It finds and returns the lowest value of the numbers in the array
+//     data in:       array of floating point numbers
+//     data returned: lowest value of the numbers in the array
+//***************************************************************************
+
+int   findLowest  (int array[ ], int size)
+{
+    int lowest =9999;
+    for(int pos =0; pos<size; pos++){
+        if(array[pos]<lowest){
+            lowest=array[pos];
+        }
+    }
+    return lowest;
+}
