@@ -1,0 +1,59 @@
+// Natalie Pham
+//  main.cpp
+// 
+/* The program will prompt the user and read in:
+ - the name of item 1. The name can be multiple words with space in between.
+ - the price of item 1 and number of items 1. Read both the price and the number in one C++ statement
+ - the name of item 2. The name can be multiple words with space in between (cin won’t work)
+ - the price of item 2 and the number of items 2. Read both the price and the number in one C++ statement
+ The program calculates the total cost of the items, including the sales tax of 9.25%.
+ The tax should be defined as a constant in the program, and not used as a literal.
+*/
+
+
+#include <iostream>
+#include <iomanip> // to set the precision of the decimal points
+
+using namespace std;
+
+int main() {
+   string name_1; // the name of item 1
+    string name_2; // the name of item 2
+    int num1;
+    int num2;
+    double costOfItem1; // the price of item1
+    float  costOfItem2; // the pric of item 2
+    double salesTax= 9.975;
+    
+    //Item 1
+    cout<< "Enter the name of Item 1:";
+    getline (cin, name_1 );
+    cout << "Enter the number of " <<name_1<< " and the price of each: ";
+    cin>> num1>> costOfItem1;
+    
+    cin.ignore(256, '\n');
+  
+    //Item 2
+    cout<< "Enter name of Item 2:";
+    getline(cin, name_2);
+    cout<< "Enter the number of " << name_2<< " and the price of each: ";
+    cin>> num2>> costOfItem2;
+    
+    //Calculate everything
+    double total1 = num1 * costOfItem1;
+    double total2= num2 * costOfItem2;
+    double tax= ((total1 + total2)*salesTax)/100;
+    
+    cout << setw(20) << left << "Item" << setw(6) << left << "Count" << setw(6) << left << "Price" << setw(10) << left << "Ext. Price\n";
+    cout << setw(20) << left << "====" << setw(6) << left << "=====" << setw(6) << left << "=====" << setw(10) << left << "========"<< endl;
+    
+    cout << setw(20)<< left << name_1 << setw(6)<< left << num1 << setw(6)<< left << costOfItem1 << setw(10)<< left << total1<<  endl;
+   
+    cout << setw(20)<< left<< name_2 <<setw(6)<< left << num2 << setw(6)<< left<< costOfItem2<< setw(10)<< left << total2 << endl;
+    
+    cout << setw(20)<< "Tax" << setw(10) << salesTax <<"* "<< total1 + total2 << endl;
+    cout << setw(32)<< "Total" << setw(10) <<fixed<< setprecision(2)<< ((tax + (total1 + total2) )) << endl;
+    
+    
+    return 0;
+}
