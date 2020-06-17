@@ -1,0 +1,81 @@
+
+#include<iostream>
+#include<cctype>
+#include<string.h>
+#include<sstream>
+using namespace std;
+
+//Define a class named Car
+class Car {
+    
+public:
+    
+    char reportingMark[5];
+    int carNumber;
+    string kind;
+    bool loaded;
+    string destination;
+    
+};
+void input(Car *T);
+void output(Car *T);
+
+int main() {
+    Car *T = new Car;
+    
+    input(T);
+    output(T);
+    
+    delete T;
+    
+    return 0;
+    
+}
+
+/* input function that
+ - reads all the data from the user
+ after all of the data has been read, put all this data into the structure
+ */
+
+void input(Car *T)
+{
+    string str, s;
+    cout << "Enter the reporting mark as a 5 or less character uppercase string: ";
+    cin >> str;
+    for (int i = 1; i < str.length(); i++){
+        //access the strucuture
+        //similar to an array
+        T->reportingMark[i] = toupper(str[i]);
+        cout << "Enter the car number: ";
+        //access the structure
+        cin >> T->carNumber;
+        cout << "Enter the kind: ";
+        //access the structure
+        cin >> T->kind;
+        cout << "Enter the loaded status as true or false: ";
+        cin >> s;
+        istringstream(s) >> boolalpha >> T->loaded;
+        
+    }
+    if (T->loaded == true) {
+        cout << "Enter the destination: ";
+        //ignores the previous
+        cin.ignore();
+        getline(cin, T->destination);
+    }
+    else
+        T->destination = "NONE";
+}
+
+/* output functon that prints the data in a
+ neat format
+ */
+
+void output(Car *T)
+{
+    cout << "Reporting Mark: " << T->reportingMark<<endl;
+    cout << "Car Number: " << T->carNumber<<endl;
+    cout << "Kind: " << T->kind<<endl;
+    cout << "Loaded Status: " << boolalpha << T->loaded<<endl;
+    cout << "Destination: " << T->destination << " ";
+}
