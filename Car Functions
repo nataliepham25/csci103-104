@@ -1,0 +1,492 @@
+/*
+ Natalie Pham
+ Order of classes and functions:
+ 1. Car class
+ 2. FreightCar class inherited from Car class
+ 3. PassengerCar class inherited from Car class
+ 4. * Build a new class called Node
+ 5. * StringOfCars class : Linked List
+ 6. buildCar functions - in Global area
+ 7. input function reads data from a file "cardata61.txt" then call buildcar functions to build the cars
+ 8. main : Create default string of cars and call input function. Test copy constructor stringOfCars2
+ that is a copy of stringOfCar1.
+ */
+#include <iostream>
+#include <string>
+#include <iomanip>
+#include <cstdlib>
+#include <fstream>
+using namespace std;
+
+// Global area - Define an enum
+enum Kind {business, maintenance, other, box, tank, flat, otherFreight, chair, sleeper, otherPassenger};
+const int NUMCARKIND = 10;
+// define an array of const string objects named KIND_ARRAY.
+const string KIND_ARRAY[NUMCARKIND] = {"business", "maintenance", "other",
+    "box", "tank", "flat", "otherFreight", "chair", "sleeper", "otherPassenger" };
+
+/**************** CAR CLASS DECLARATION ****************/
+class Car
+{
+protected:
+    string c_type;          // Type field
+    string c_order;         // Car Order field
+    string reportingMark;   // a string of 5 or less upper case characters
+    int carNumber;          // an int
+    Kind kind;              // could be box, tank, flat or other * Change to Kind rather than string
+    bool loaded;            // a bool
+    string destination;     // a string with a destination or the word NONE
+public:
+    // #1 - Default constructor initializes the five values
+    Car();
+    
+    // #2 - Copy constructor
+    Car(const Car& obj);
+    
+    // Constructor #3 - accepts five constant reference parameters. Call setUp function
+    Car(const string &type, const string &order, const string &rMark,
+        const int &cNumber, const string &knd, const bool &load, const string &dest);
+    
+    // Destructor does nothing
+    ~Car(){ };
+    
+    // Mutator member function prototypes
+    void setType(string type)
+    {c_type = type;}
+    
+    void setOrder(string order)
+    {c_order = order;}
+    
+    void setReportingMark(string rMark)
+    {   reportingMark = rMark;}
+    
+    void setCarNumber(int cNumber)
+    {   carNumber = cNumber;}
+    
+    void setKind(Kind knd)
+    {   kind = knd;}
+    
+    void setLoaded(bool load)
+    {   loaded = load;}
+    
+    void setDestination(string dest)
+    {   destination = dest;}
+    
+    // Accessor member function prototypes
+    string getType() const
+    {return c_type;}
+    
+    string getOrder() const
+    {return c_order;}
+    
+    string getReportingMark() const
+    {   return reportingMark;}
+    
+    int getCarNumber() const
+    {   return carNumber;}
+    
+    Kind getKind() const
+    {   return kind;}
+    
+    bool getLoaded() const
+    {   return loaded;}
+    
+    string getDestination() const
+    {   return destination;}
+    
+    // Member functions
+    void output();  // Print the Car
+    void setUp(const string &type, const string &order, const string &rMark, const int &cNumber,
+               const string &knd, const bool &load, const string &dest);
+    // operator= overload member function returns the left hand operator by reference
+    Car & operator=(const Car & carB);
+    // Friend function
+    friend bool operator == (const Car &left, const Car &right);
+    
+    // Build a new member function
+    virtual void setKind(const string &knd)
+    {
+        for(int i = business; i < other; i++)
+        {
+            if(KIND_ARRAY[i].compare(knd)==0)
+            {
+                kind = static_cast<Kind>(i);
+                return;
+            }
+            else
+                kind = other;
+        }
+    };
+};
+/*--------------- END OF CAR CLASS DECLARATION -----------------*/
+
+/**************** FREIGHTCAR CLASS DECLARATION (DERIVED) ****************/
+class FreightCar : public Car
+{
+public:
+    // Freight inherited from Car class
+    FreightCar() : Car()
+    {   }
+    
+    // Constructor #2 - copy constructor
+    FreightCar(const Car& obj) : Car(obj)
+    {    }
+    
+    // Constructor #3 - accepts five constant reference parameters
+    FreightCar(const string type, const string order, const string rMark, const int cNumber, const string knd, const bool load, const string dest)
+    : Car(type, order, rMark, cNumber, knd, load, dest)
+    {  setKind(knd); }
+    
+    void setKind(const string &knd)
+    {
+        for(int i = box; i < otherFreight; i++)
+        {
+            if(KIND_ARRAY[i].compare(knd)==0)
+            {
+                kind = static_cast<Kind>(i);
+                return;
+            }
+            else
+                kind = otherFreight;
+        }
+    };
+};
+/*--------------- END OF FREIGHTCAR CLASS DECLARATION -----------------*/
+
+/**************** PASSENGERCAR CLASS DECLARATION (DERIVED) ****************/
+class PassengerCar : public Car
+{
+public:
+    // Inherited from Car class
+    PassengerCar(): Car()
+    {    }
+    
+    // Constructor #2 - copy constructor
+    PassengerCar(const Car& obj): Car(obj)
+    {    }
+    
+    // Constructor #3 - accepts five constant reference parameters
+    PassengerCar(const string type, const string order, const string rMark, const int cNumber, const string knd, const bool load, const string dest)
+    : Car(type, order, rMark, cNumber, knd, load, dest)
+    {   setKind(knd); }
+    
+    void setKind(const string &knd)
+    {
+        for(int i = chair; i < otherPassenger; i++)
+        {
+            if(KIND_ARRAY[i].compare(knd)==0)
+            {
+                kind = static_cast<Kind>(i);
+                return;
+            }
+            else
+                kind = otherPassenger;
+        }
+    };
+};
+/*--------------- END OF PASSENGERCAR CLASS DECLARATION -----------------*/
+
+// Forward declaration of StringOfCars class
+class StringOfCars;
+
+/**************** NODE CLASS DECLARATION ****************/
+class Node
+{
+private:
+    Node *next;     // Point to the next node in the linked list
+    Car * data;     // Point to the Car data associated with this node
+    // Default constructor sets the next and data pointers to zero
+    Node()
+    {
+        next = NULL;
+        data = NULL;
+    }
+public:
+    friend class StringOfCars;
+};
+
+/**************** STRINGOFCARS CLASS ****************/
+class StringOfCars
+{
+private:
+    Node *head;
+    Node *tail;
+public:
+    // Default Constructor gets space for the array in the heap and sets the size to 0
+    StringOfCars();
+    // Copy constructor gets new space in the heap for the array and copies all Car objects
+    StringOfCars(const StringOfCars &) ;
+    // Destructor returns space to the heap
+    ~StringOfCars(){};
+    // push function adds a car to the string of cars
+    void push(Car &car);
+    // output2 function prints a heading for each car
+    void output2();
+};
+/*--------------- END OF STRINGOFCARS CLASS DECLARATION -----------------*/
+
+/************* CAR MEMBER FUNCTION DEFINITIONS **************/
+/******* #1 - Default constructor initializes the five values *******/
+Car::Car()
+{
+    c_type = "";
+    c_order = "";
+    reportingMark = "";
+    carNumber = 0;
+    setKind("");
+    loaded = false;
+    destination = "NONE";
+}
+/********** #2 - Copy constructor **********/
+Car::Car(const Car &obj)
+{
+    c_type = obj.c_type;
+    c_order = obj.c_order;
+    reportingMark = obj.reportingMark;
+    carNumber = obj.carNumber;
+    kind = obj.kind;
+    loaded = obj.loaded;
+    destination = obj.destination;
+}
+/********** Constructor #3 - accepts five constant reference parameters **********
+ Constructor calls the setUp member function
+ */
+Car::Car(const string &type, const string &order, const string &rMark,
+         const int &cNumber, const string &knd, const bool &load, const string &dest)
+{
+    setUp(type, order, rMark, cNumber, knd, load, dest);
+}
+/******************** output ********************
+ void output member function print the Car data in a neat format
+ */
+void Car::output()
+{
+    cout << setw(15) << left << "Type: " << c_type << endl;
+    cout << setw(15) << left << "Order: " << c_order << endl;
+    cout << setw(15) << left << "reportingMark: " << reportingMark << endl;
+    cout << setw(15) << left << "carNumber: " << carNumber << endl;
+    cout << setw(15) << left << "kind: " << KIND_ARRAY[kind] << endl;
+    cout << setw(15) << left << "loaded: ";
+    if (loaded)
+        cout << "true";
+    else
+        cout << "false";
+    cout << endl;
+    cout << setw(12) << left << "destination:" << destination << endl;
+    cout << endl;
+}
+/******************** setUp ********************
+ void setUp function sets the data in the object.
+ It accepts five variable parameters as constant reference parameters
+ */
+void Car::setUp(const string &type, const string &order, const string &rMark, const int &cNumber,
+                const string &knd, const bool &load, const string &dest)
+{
+    c_type = type;
+    c_order = order;
+    reportingMark = rMark;
+    carNumber = cNumber;
+    setKind(knd);   // call function setKind
+    loaded = load;
+    destination = dest;
+}
+/******************** Car  operator=  ********************
+ operator= overload member function returns the left hand operator by reference
+ */
+Car & Car::operator=(const Car & carB)
+{
+    c_type        = carB.c_type;
+    c_order       = carB.c_order;
+    reportingMark = carB.reportingMark;
+    carNumber     = carB.carNumber;
+    kind          = carB.kind;
+    loaded        = carB.loaded;
+    destination   = carB.destination;
+    
+    return * this;
+}
+/*-------------- END OF CAR MEMBER FUNCTIONS DEFINITION -------------*/
+
+/*************** STRINGOFCARS MEMBER FUNCTION DEFINITIONS ****************/
+/*************** StringOfCars Default Constructor ***************
+ Default constructor - Sets head and tail pointers to zero
+ */
+StringOfCars::StringOfCars()
+{
+    head = NULL;
+    tail = NULL;
+}
+/*************** StringOfCars Copy Constructor **************
+ Copy Constructor sets head and tail pointers in the StringOfCars to zero
+ Loop while the currentNodePointer is not zero.
+ */
+StringOfCars::StringOfCars(const StringOfCars &obj)
+{   // Declare a local pointer variable
+    Node * currentNodePtr;
+    // Point to the Node in the oldStringOfCars
+    currentNodePtr = obj.head;
+    // Set the head and tail pointers to zero
+    head = NULL;
+    tail = NULL;
+    // If the head point is not zero
+    if(obj.head)
+    {
+        while(currentNodePtr)
+        {
+            push(*(currentNodePtr->data));
+            currentNodePtr = currentNodePtr->next;
+        }
+    }
+}
+/*************** StringOfCars output2 **************
+ output2 print heading for each car then uses Car output()
+ funtion to print data for each car
+ */
+void StringOfCars::output2()
+{   // Declare a local pointer variable which points to the Node
+    Node *currentNodePtr;
+    // If the head is zero
+    if(!head)
+        cout << "NO cars\n";
+    else
+        currentNodePtr = head;
+    // While the currentNodePtr is not zero
+    int count = 1;
+    while(currentNodePtr)
+    {
+        cout << "Contents of Car Number: " << count++ << endl;
+        currentNodePtr->data->output(); // print the car
+        currentNodePtr = currentNodePtr->next;  // Make the next Node the current Node
+    }
+}
+/*************** StringOfCars Push **************
+ Push function adds a car to the string of cars
+ Use new to get space in the heap for a new Car
+ Use new to get space in the heap for a Node
+ */
+void StringOfCars::push(Car &car)
+{
+    // Declare local pointer variables
+    Car * currentCarPtr;
+    Node * currentNodePtr;
+    // Use new to get space in the heap
+    currentCarPtr = new Car;
+    currentNodePtr = new Node;
+    
+    currentCarPtr = &car;
+    currentNodePtr->data = currentCarPtr;
+    // If the head pointer is zero
+    if(!head)
+    {
+        head = currentNodePtr;
+        tail = currentNodePtr;
+    }
+    else
+    {
+        tail->next = currentNodePtr;
+        tail = currentNodePtr;
+    }
+}
+
+/*-------- END OF STRINGOFCARS MEMBER FUNCTIONS DEFINITION ---------*/
+
+/*************** Friend function ***************
+ operator== tests if reportingMark and carNumber are the same
+ */
+bool operator == (const Car &left, const Car &right)
+{
+    return left.reportingMark == right.reportingMark && left.carNumber == right.carNumber;
+}
+
+/*************** GLOBAL AREA - BUILD CARS ***************/
+void buildCar(Car * &carPtr, const string &type, const string &order, const string &rMark,
+              const int &cNumber, const string &knd, const bool &load, const string &dest, StringOfCars &stringOfCars1)
+{
+    carPtr = new Car;
+    carPtr -> setUp(type, order, rMark, cNumber, knd, load, dest);
+    stringOfCars1.push(*carPtr);
+}
+void buildFreightCar(FreightCar * &carPtr, const string &type, const string &order, const string &rMark,
+                     const int &cNumber, const string &knd, const bool &load, const string &dest, StringOfCars &stringOfCars1)
+{
+    carPtr = new FreightCar;
+    carPtr-> setUp(type, order, rMark, cNumber, knd, load, dest);
+    stringOfCars1.push(*carPtr);
+}
+
+void buildPassengerCar(PassengerCar * &carPtr, const string &type, const string &order, const string &rMark,
+                       const int &cNumber, const string &knd, const bool &load, const string &dest, StringOfCars &stringOfCars1)
+{
+    carPtr = new PassengerCar;
+    carPtr-> setUp(type, order, rMark, cNumber, knd, load, dest);
+    stringOfCars1.push(*carPtr);
+}
+/******************** input ********************
+ input function is not a member of Car class.
+ Read cars data from file "cardata.txt".
+ Then call buildCar function to build the car.
+ */
+void input(StringOfCars &stringOfCars1)
+{
+    // Define local variables
+    string type;        // Read Type field
+    string order;       // Read Order field
+    string rMark;       // Read ARR field - string of 5 or less upper characters
+    int cNumber;        // an int
+    string knd;         // could be box, tank, flat or other
+    bool load;          // a bool
+    string dest;        // a string with a destination or the word NONE
+    // Declare object
+    ifstream inputFile;
+    inputFile.open("cardata61.txt");
+    // If the open fails, send message to stderr and exit the program
+    if (!inputFile)
+    {
+        cerr << "Error opening file\n";
+        exit(0);
+    }
+    
+    while(inputFile.peek()!=EOF)
+    {
+        inputFile >> type >> order >> rMark >> cNumber >> knd ;
+        inputFile >> boolalpha >> load;
+        getline(inputFile, dest);
+        if(type == "Car")
+        {
+            Car * carPtr;
+            buildCar(carPtr, type, order, rMark, cNumber, knd, load, dest, stringOfCars1);
+        }
+        else if(type == "FreightCar")
+        {
+            FreightCar * carPtr;
+            buildFreightCar(carPtr, type, order, rMark, cNumber, knd, load, dest, stringOfCars1);
+        }
+        else if(type == "PassengerCar")
+        {
+            PassengerCar * carPtr;
+            buildPassengerCar(carPtr, type, order, rMark, cNumber, knd, load, dest, stringOfCars1);
+        }
+        else
+            cout << "Error Type class\n";
+    };
+    
+    // Close the file
+    inputFile.close();
+}
+
+/******************** MAIN ********************/
+int main()
+{
+    //Create a default string of cars in main.
+    StringOfCars stringOfCars1;
+    // Call input funtion and build the string of cars
+    input(stringOfCars1);
+    // Make stringOfCars2 a copy of stringOfCars1 in the stack
+    StringOfCars stringOfCars2(stringOfCars1);
+    cout << "\n===== Display list of stringOfCars2 =====\n";
+    // Print stringOfCars2
+    stringOfCars2.output2();
+    // Close the file
+    cout << endl;
+    return 0;
+}
