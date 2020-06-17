@@ -1,0 +1,64 @@
+
+#include <iostream>
+#include <cstring>
+using namespace std;
+int main()
+{
+    //1.2.1
+    //Read a string from the user into a string named string1.
+    string string1;
+    cout<<"Enter the string1: ";
+    getline(cin, string1);
+    //Print the following heading and the data contained in string1:
+    cout<<"Exercise 1"<<endl<<string1<<endl;
+    
+    //1.2.2
+    //Create a new string named string2 containing the contents from string1.
+    string string2 = string1;
+    //Append the following text to the end of string 2. sleepy heads
+    //(Note that there is a space before sleepy.)
+    string2 += " sleepy heads";
+    //Print the following heading and the data contained in string2:
+    cout<<"Exercise 2"<<endl<<string2<<endl;
+    
+    //1.2.3
+    //Create string3 with an initial value of:
+    //bellow cello fellow hello mellow Novello Othello pillow Rollo solo yellow
+    string string3 = "bellow cello fellow hello mellow Novello Othello pillow Rollo solo yellow";
+    //Find the location of the first h in string3
+    int hIndex = string3.find("h");
+    //Print the following heading and the location found in string3: Exercise 3 20
+    cout<<"Exercise 3"<<endl;
+    cout<< "The first h is at column "<<hIndex<<endl;
+    
+    //1.2.4
+    //Create an empty string named string4.
+    string string4 = "";
+    //Copy string3 into string4.
+    string4 = string3;
+    //Using the location found in exercise 3,
+    //change the first h into J
+    string4.at(hIndex) = 'J';
+    //Print the following heading and the data contained in string4: Exercise 4
+    //bellow cello fellow Jello mellow Novello Othello pillow Rollo solo yellow
+    cout<<"Exercise 4"<<endl<<string4<<endl;
+    
+    //1.2.5
+    //Create a copy of string3 named string5.
+    string string5 = string3;
+    //Use the find_last_of member function to find the position of the last l
+    int lastOfl = string5.find_last_of("l");
+    //Print the following heading and the position of the last Exercise 5 69
+    cout<<"Exercise 5"<<endl<<lastOfl<<endl;
+    
+    //1.2.6
+    //Create a new string named string6 containing the contents from string3.
+    string string6 = string3;
+    //Using the position of the last l found in exercise 5, erase all
+    //characters from string6 following the last l
+    string6.erase(lastOfl+1);
+    //Print the following heading and the data contained in string6:
+    //Exercise 6 bellow cello fellow hello mellow Novello Othello pillow Rollo solo yell
+    cout<<"Exercise 6"<<endl<<string6<<endl;
+    return 0;
+}
